@@ -11,10 +11,14 @@ function! Find(args)
     let l:args_list = split(a:args)
     let l:file_name = l:args_list[0]
     let l:find_params = join(l:args_list[1:], ' ')
-    if len(l:args_list) > 1
-        let l:find_cmd = "find . ". l:find_params ." -iname '". l:file_name ."'"
+    if has('win32')
+        let l:find_cmd = 'dir /b /s "'. l:file_name .'"'
     else
-        let l:find_cmd = "find . -iname '". l:file_name ."'"
+        if len(l:args_list) > 1
+            let l:find_cmd = "find . ". l:find_params ." -iname '". l:file_name ."'"
+        else
+            let l:find_cmd = "find . -iname '". l:file_name ."'"
+        endif
     endif
     let l:filelist = split(system(l:find_cmd), '\n')
     if len(l:filelist) == 0
