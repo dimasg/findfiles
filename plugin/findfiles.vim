@@ -25,6 +25,22 @@ function! Find(args)
         echo "No files found"
         return
     endif
+    if exists("g:find_files_ignore")
+        let l:filtered_list = []
+        for file_name in l:filelist
+            let l:ignore = 0
+            for ignore_rx in g:find_files_ignore
+                if l:file_name =~ l:ignore_rx
+                    let l:ignore = 1
+                    break
+                endif
+            endfor
+            if (l:ignore == 0)
+                call add(l:filtered_list, l:file_name)
+            endif
+        endfor
+        let l:filelist = l:filtered_list
+    endif
     let l:buff_name = '"Find file (' . len(l:filelist) . ') : '. l:file_name . '"'
     let l:buff_height = s:max_buff_height
     if len(l:filelist) < l:buff_height
